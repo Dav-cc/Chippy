@@ -1,3 +1,10 @@
+build/
+test.c
+test/
+a.out
+chip
+
+# --------------------------------#
 # Prerequisites
 *.d
 
