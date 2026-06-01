@@ -121,6 +121,7 @@ public:
   void OP_2nnn();
   void OP_3xkk();
   void OP_4xkk();
+    // --
   void OP_5xy0();
   void OP_6xkk();
   void OP_7xkk();
@@ -149,9 +150,10 @@ public:
   void OP_Fx33();
   void OP_Fx55();
   void OP_Fx65();
-  // // exits chip8 with value of N
+
+  // exits chip8 with value of N
   // void OP_001N();
-  // // scroll display N lines down
+  // scroll display N lines down
   // void OP_00CN();
 
   std::default_random_engine randGen;
