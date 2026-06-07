@@ -164,7 +164,7 @@ void Chip8::OP_8xy5() {
 
 // set Vx = Vx SHR 1
 void Chip8::OP_8xy6() {
-  // 1000 xxxx yyyy 0111
+  // 1000 xxxx yyyy 0110
   uint8_t X = (opcode & 0x0F00) >> 8u;
   uint8_t Y = (opcode & 0x00F0) >> 4u;
   if (registers[X] & 0x0001) {
@@ -172,5 +172,58 @@ void Chip8::OP_8xy6() {
   } else {
     registers[0xF] = 0;
   }
-    registers[X]/=2;
+  registers[X] /= 2;
+}
+
+// set Vx = Vy - Vx set Vf = not borrow
+void Chip8::OP_8xy7() {
+  // 1000 xxxx yyyy 0111
+  uint8_t X = (opcode & 0x0F00) >> 8u;
+  uint8_t Y = (opcode & 0x00F0) >> 4u;
+  if (registers[Y] > registers[X]) {
+    registers[0xF] = 1;
+  } else {
+    registers[0xF] = 0;
+  }
+  registers[X] = registers[Y] - registers[X];
+}
+
+// set Vx = Vx SHL 1
+void Chip8::OP_8xyE() {
+  // 1000 xxxx yyyy EEEE
+  uint8_t X = (opcode & 0x0F00) >> 8u;
+  uint8_t Y = (opcode & 0x00F0) >> 4u;
+
+  registers[0xF] = (registers[X] & 0x80) >> 7u;
+  registers[X] >>= 1; // *2
+}
+
+// skipp next instruxtion if Vx != Vy
+void Chip8::OP_9xy0() {
+  // 1000 xxxx yyyy EEEE
+  uint8_t X = (opcode & 0x0F00) >> 8u;
+  uint8_t Y = (opcode & 0x00F0) >> 4u;
+  if (registers[Y] != registers[X]) {
+    pc += 2;
+  }
+}
+
+// set Index register to nnn
+void Chip8::OP_Annn() {
+  uint16_t address = (opcode & 0x0FFF);
+  index = address;
+}
+
+// jump to location nnn +V0
+void Chip8::OP_Bnnn() {
+  uint16_t address = (opcode & 0x0FFF);
+  pc = address + registers[0];
+}
+
+
+// load Vx  random bytes & kk
+void Chip8::OP_Cxkk() {
+    uint8_t X = (opcode &0x0F00) >> 8u;
+    uint8_t kk =  (opcode & 0x00FF);
+    registers[X] = randByte(randGen) & kk;
 }
